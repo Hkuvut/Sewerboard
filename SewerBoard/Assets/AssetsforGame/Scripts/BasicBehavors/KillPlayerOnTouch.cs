@@ -24,4 +24,8 @@ public class KillPlayerOnTouch : MonoBehaviour
             Debug.Log("Death by " + name);
         }
     }
+    
+
+    
+    
 }
