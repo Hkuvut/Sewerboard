@@ -38,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
 
         }
 
-        if (held == true && Input.GetKeyDown(KeyCode.Q) && Board.GetComponent<Movement>().OnSkateBoard == false)
+        else if (held == true && Input.GetKeyDown(KeyCode.Q) && Board.GetComponent<Movement>().OnSkateBoard == false)
         {
             held = false;
             Board.transform.localRotation = Quaternion.Euler(0, 0, 0);
@@ -139,6 +139,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
     }
+    
 
 
 
