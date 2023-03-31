@@ -10,8 +10,11 @@ public class PlayerMovement : MonoBehaviour
     public GameObject Board;
     private bool canMove = true;
     public bool held;
+    [SerializeField]
+    private int MoveMode;
+    // 1 is left; 2 is idle; 3 is right.
 
-
+    
 
 
 
@@ -19,15 +22,45 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         Debug.Log("hi");
+        int BoardLayer = LayerMask.NameToLayer("Board");
+        int PlayerLayer = LayerMask.NameToLayer("Player");
+        int BoardHeldLayer = LayerMask.NameToLayer("BoardHeld");
+        Board.layer = BoardLayer;
+        this.gameObject.layer = PlayerLayer;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (MoveMode == 1)
+        { if (this.gameObject.GetComponent<SpriteRenderer>().flipX == false)
+            {
+            
+            this.gameObject.GetComponent<SpriteRenderer>().flipX = true;
+            if (held == true)
+                {
+                    Board.transform.localPosition = new Vector2(-0.2f, 0f);
+                }
+            }
+        }
+
+        if (MoveMode == 3)
+        {
+            if (this.gameObject.GetComponent<SpriteRenderer>().flipX == true)
+            {
+
+                this.gameObject.GetComponent<SpriteRenderer>().flipX = false;
+                if (held == true)
+                {
+                    Board.transform.localPosition = new Vector2(0.2f, 0f);
+                }
+            }
+        }
         if (held == false && Input.GetKeyDown(KeyCode.Q) && Board.GetComponent<Movement>().OnSkateBoard == false)
 
         {
-
+            int BoardHeldLayer = LayerMask.NameToLayer("BoardHeld");
+            Board.layer = BoardHeldLayer;
             Board.transform.parent = this.transform;
             Board.transform.localPosition = new Vector2(0, 0.2f);
             Board.transform.localRotation = Quaternion.Euler(0, 0, 180);
@@ -36,15 +69,18 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log("held");
 
 
+
         }
 
         else if (held == true && Input.GetKeyDown(KeyCode.Q) && Board.GetComponent<Movement>().OnSkateBoard == false)
         {
+            int BoardLayer = LayerMask.NameToLayer("Board");
             held = false;
             Board.transform.localRotation = Quaternion.Euler(0, 0, 0);
             Board.GetComponent<Rigidbody2D>().isKinematic = false;
             Board.transform.parent = null;
             Debug.Log("dropped");
+            Board.layer = BoardLayer;
         }
 
 
@@ -64,9 +100,12 @@ public class PlayerMovement : MonoBehaviour
 
             {
                 Debug.Log("Goton");
+
                 Mount();
                 canMove = false;
                 rb.isKinematic = true;
+                Board.GetComponent<Movement>().OnSkateBoard = true;
+
             }
 
         }
@@ -94,12 +133,19 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetKey(KeyCode.A))
             {
                 rb.AddForce(Vector2.left * speed * Time.deltaTime);
+                MoveMode = 1;
             }
             if (Input.GetKey(KeyCode.D))
             {
                 rb.AddForce(Vector2.right * speed * Time.deltaTime);
+                MoveMode = 3;
             }
         }
+        //if (!Input.GetKeyDown(KeyCode.A) && !Input.GetKeyDown(KeyCode.D))
+        //{
+        //    MoveMode = 2;
+        //}
+
 
 
 
